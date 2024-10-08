@@ -1,7 +1,15 @@
-import app from './app';
+import express from 'express';
+import cors from 'cors';
 
-const PORT = process.env.PORT || 3001;
+const app = express();
+app.use(cors());
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+app.get('/', (req, res) => {
+  res.send('API de Leitor de Cupom Fiscal');
 });
+
+app.listen(3000, () => {
+  console.log('Servidor rodando na porta 3000');
+});
+
+export default app;
