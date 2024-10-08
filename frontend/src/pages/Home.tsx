@@ -15,7 +15,7 @@ function Home() {
   const handleScanSuccess = async (data: string) => {
     try {
       // Se você já tiver os dados no formato correto, tente chamar o backend
-      const backendURL = 'https://leitor-cupom-fiscal-9ota.vercel.app';  // Substitua pela URL do seu backend no Vercel
+      const backendURL = 'https://leitor-cupom-fiscal-9ota.vercel.app';   // Substitua pela URL do seu backend no Vercel
 
       const response = await axios.post(`${backendURL}/processar-dados`, { qrData: data });
       console.log('Dados processados pelo backend:', response.data);
