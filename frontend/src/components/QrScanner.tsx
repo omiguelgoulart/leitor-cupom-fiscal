@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { QrReader } from "react-qr-reader";
+import QrReader from "react-qr-reader";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
@@ -13,20 +13,20 @@ const QrScanner: React.FC<QrScannerProps> = () => {
 
   const handleScanSuccess = async (qrData: string) => {
     try {
-      console.log("QR Code identificado:", qrData); // Log para verificar se o QR Code foi capturado
+      console.log("QR Code identificado:", qrData);
       setData(qrData);
 
-      // Fazer a requisição HTTP diretamente no frontend (CORS pode bloquear)
+      // Fazer a requisição HTTP diretamente no frontend
       const response = await axios.get(qrData);
 
-      console.log("Resposta da URL:", response); // Verificar a resposta da requisição
+      console.log("Resposta da URL:", response);
 
       const html = response.data;
 
       // Carregar o HTML com Cheerio
       const $ = cheerio.load(html);
 
-      // Extrair dados usando seletores, semelhante ao jQuery
+      // Extrair dados usando seletores
       const nomeEstabelecimento = $('.txtTopo').first().text().trim();
       const valorTotal = $('#linhaTotal .txtMax').first().text().trim();
       const dataEmissao = $('strong:contains("Emissão:")')
@@ -37,7 +37,7 @@ const QrScanner: React.FC<QrScannerProps> = () => {
         .split('-')[0]
         .trim();
 
-      console.log("Nome:", nomeEstabelecimento, "Valor:", valorTotal, "Data:", dataEmissao); // Log para verificar se os dados foram extraídos corretamente
+      console.log("Nome:", nomeEstabelecimento, "Valor:", valorTotal, "Data:", dataEmissao);
 
       setCupomData({ nome: nomeEstabelecimento, valor: valorTotal, data: dataEmissao });
     } catch (error) {
@@ -51,15 +51,15 @@ const QrScanner: React.FC<QrScannerProps> = () => {
   return (
     <div>
       <QrReader
-        onResult={(result, error) => {
+        onScan={(result) => {
           if (result) {
-            handleScanSuccess(result.getText());
-          }
-          if (error) {
-            console.error(error);
+            handleScanSuccess(result);
           }
         }}
-        constraints={{ facingMode: "environment" }}
+        onError={(error) => {
+          console.error("Erro ao ler o QR Code", error);
+        }}
+        facingMode="environment" // Forçar a câmera traseira
         className="w-60"
       />
       <p>{data}</p>
