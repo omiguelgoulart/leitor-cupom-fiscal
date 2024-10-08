@@ -1,5 +1,5 @@
 import { useState } from "react";
-import QrReader from "react-qr-reader";
+import { QrReader } from "react-qr-reader";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
@@ -51,15 +51,12 @@ const QrScanner: React.FC<QrScannerProps> = () => {
   return (
     <div>
       <QrReader
-        onScan={(result) => {
-          if (result) {
-            handleScanSuccess(result);
+        onResult={(result: any) => {
+          if (result?.text) {
+            handleScanSuccess(result.text);
           }
         }}
-        onError={(error) => {
-          console.error("Erro ao ler o QR Code", error);
-        }}
-        facingMode="environment" // Forçar a câmera traseira
+        constraints={{ facingMode: 'environment' }} // Forçar a câmera traseira
         className="w-60"
       />
       <p>{data}</p>
