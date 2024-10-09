@@ -4,10 +4,10 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 
 interface QrScannerProps {
-  onScanSuccess: (data: string) => void;
+  onScanSuccess: (data: string) => void; // A prop onScanSuccess está sendo declarada
 }
 
-const QrScanner: React.FC<QrScannerProps> = () => {
+const QrScanner: React.FC<QrScannerProps> = ({ onScanSuccess }) => {  // Recebe as props corretamente
   const [data, setData] = useState("Nenhum resultado");
   const [cupomData, setCupomData] = useState({ nome: "", valor: "", data: "" });
 
@@ -16,17 +16,13 @@ const QrScanner: React.FC<QrScannerProps> = () => {
       console.log("QR Code identificado:", qrData);
       setData(qrData);
 
-      // Fazer a requisição HTTP diretamente no frontend
+      // Fazer a requisição HTTP diretamente no frontend (CORS pode bloquear)
       const response = await axios.get(qrData);
-
       console.log("Resposta da URL:", response);
 
       const html = response.data;
-
-      // Carregar o HTML com Cheerio
       const $ = cheerio.load(html);
 
-      // Extrair dados usando seletores
       const nomeEstabelecimento = $('.txtTopo').first().text().trim();
       const valorTotal = $('#linhaTotal .txtMax').first().text().trim();
       const dataEmissao = $('strong:contains("Emissão:")')
@@ -37,26 +33,27 @@ const QrScanner: React.FC<QrScannerProps> = () => {
         .split('-')[0]
         .trim();
 
-      console.log("Nome:", nomeEstabelecimento, "Valor:", valorTotal, "Data:", dataEmissao);
-
       setCupomData({ nome: nomeEstabelecimento, valor: valorTotal, data: dataEmissao });
+
+      // Chama a função onScanSuccess para enviar os dados para o componente pai
+      onScanSuccess(qrData);
     } catch (error) {
       console.error("Erro ao buscar os dados do cupom", error);
-      if (axios.isAxiosError(error) && error.response && error.response.status === 403) {
-        alert('A requisição foi bloqueada devido à política de CORS.');
-      }
     }
   };
 
   return (
     <div>
       <QrReader
-        onResult={(result: any) => {
-          if (result?.text) {
-            handleScanSuccess(result.text);
+        onResult={(result, error) => {
+          if (result?.getText()) {
+            handleScanSuccess(result.getText());
+          }
+          if (error) {
+            console.error(error);
           }
         }}
-        constraints={{ facingMode: 'environment' }} // Forçar a câmera traseira
+        constraints={{ facingMode: "environment" }} // Força a câmera traseira
         className="w-60"
       />
       <p>{data}</p>

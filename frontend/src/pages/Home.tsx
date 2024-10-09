@@ -12,15 +12,15 @@ export interface CupomData {
 function Home() {
   const [cupomData, setCupomData] = useState<CupomData[]>([]);
 
-  const handleScanSuccess = async (data: string) => {
+  const handleScanSuccess = async (qrData: string) => {
     try {
-      // Se você já tiver os dados no formato correto, tente chamar o backend
-      const backendURL = 'https://leitor-cupom-fiscal-9ota.vercel.app';   // Substitua pela URL do seu backend no Vercel
+      // Chama o backend com os dados do QR code
+      const backendURL = 'https://seu-backend-url.vercel.app';  // Substitua pela URL do backend no Vercel
 
-      const response = await axios.post(`${backendURL}/processar-dados`, { qrData: data });
+      const response = await axios.post(`${backendURL}/processar-dados`, { qrData });
       console.log('Dados processados pelo backend:', response.data);
 
-      const parsedData = response.data as CupomData;
+      const parsedData = response.data as CupomData;  // Recebe os dados no formato esperado
       const updatedData = [...cupomData, parsedData];
 
       localStorage.setItem('cupomData', JSON.stringify(updatedData));
@@ -40,6 +40,8 @@ function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-8">
       <h1 className="text-3xl font-bold mb-6 text-blue-700">Leitor de QR Code</h1>
+      
+      {/* Usa o componente QrScanner e passa a função de callback */}
       <QrScanner onScanSuccess={handleScanSuccess} />
 
       <h2 className="text-2xl font-semibold mb-4">Dados de Cupons Fiscais</h2>

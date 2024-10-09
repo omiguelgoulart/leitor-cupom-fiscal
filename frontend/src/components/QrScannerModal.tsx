@@ -1,33 +1,27 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-responsive-modal';
-import 'react-responsive-modal/styles.css'; // Importa os estilos da modal
-import QrScanner from './QrScanner'; // O componente de leitura de QR Code
+import 'react-responsive-modal/styles.css';
+import QrScanner from './QrScanner';  // Importa o QrScanner com a prop onScanSuccess
 
-interface QrScannerModalProps {
-  onScanSuccess: (data: string) => void; // Função chamada quando o QR Code for lido com sucesso
-}
+const QrScannerModal: React.FC = () => {
+  const [open, setOpen] = useState(false);
 
-const QrScannerModal: React.FC<QrScannerModalProps> = ({ onScanSuccess }) => {
-  const [open, setOpen] = useState(false); // Controla o estado de abertura do modal
-
-  // Funções para abrir e fechar o modal
-  const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
+  const handleScanSuccess = (data: string) => {
+    console.log("QR Code escaneado com sucesso:", data);
+  };
 
   return (
     <div className="flex flex-col items-center">
-      {/* Botão para abrir o modal */}
       <button
-        onClick={handleOpenModal}
+        onClick={() => setOpen(true)}
         className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
       >
         Abrir Câmera
       </button>
 
-      {/* Modal que contém o componente QrScanner */}
-      <Modal open={open} onClose={handleCloseModal} center>
+      <Modal open={open} onClose={() => setOpen(false)} center>
         <h2 className="text-xl font-semibold mb-4">Escanear QR Code</h2>
-        <QrScanner onScanSuccess={onScanSuccess} />
+        <QrScanner onScanSuccess={handleScanSuccess} />  {/* Passando a prop onScanSuccess corretamente */}
       </Modal>
     </div>
   );
