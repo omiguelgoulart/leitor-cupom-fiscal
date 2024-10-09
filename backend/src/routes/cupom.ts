@@ -13,11 +13,14 @@ router.get('/buscar-dados', async (req: Request, res: Response) => {
     }
 
     try {
+        // Faz a requisição HTTP para a URL do QR Code
         const response = await axios.get(url as string);
         const html = response.data;
 
+        // Carrega o HTML da página com cheerio
         const $ = cheerio.load(html);
 
+        // Extrai os dados desejados
         const nomeEstabelecimento = $('.txtTopo').first().text().trim();
         const valorTotal = $('#linhaTotal .txtMax').first().text().trim();
         const dataEmissao = $('strong:contains("Emissão:")')
@@ -28,6 +31,7 @@ router.get('/buscar-dados', async (req: Request, res: Response) => {
             .split('-')[0]
             .trim();
 
+        // Retorna os dados extraídos em formato JSON
         res.json({
             nome: nomeEstabelecimento,
             valor: valorTotal,

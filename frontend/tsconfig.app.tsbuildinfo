@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/qrscanner.tsx","./src/components/qrscannermodal.tsx","./src/pages/home.tsx","./src/utils/csvhelper.ts"],"errors":true,"version":"5.6.2"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/qrscanner.tsx","./src/components/qrscannermodal.tsx","./src/pages/home.tsx","./src/utils/csvhelper.ts"],"version":"5.6.2"}
