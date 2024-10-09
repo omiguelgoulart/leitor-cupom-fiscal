@@ -15,13 +15,16 @@ const App: React.FC = () => {
     if (cupomData) {
       try {
         const backendURL = 'https://leitor-cupom-fiscal-9ota.vercel.app';  // Substitua pela URL do backend
-        const response = await axios.post(`${backendURL}/processar-dados`, { qrData: cupomData });
+        const response = await axios.get(`${backendURL}/api/cupom/buscar-dados`, {
+          params: { url: cupomData }  // Passa o QR code como parâmetro da URL
+        });
         setApiResponse(response.data);  // Armazena a resposta da API
       } catch (error) {
         console.error('Erro ao fazer a requisição:', error);
       }
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-8">
