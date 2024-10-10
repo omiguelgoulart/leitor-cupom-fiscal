@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import QrScanner from '../components/QrScanner';
-import { exportToCSV } from '../utils/csvHelper';
-import axios from 'axios'; // Importa o axios para fazer requisições ao backend
+import CupomList from '../components/CupomList';  // Importa o componente de lista de cupons
+import axios from 'axios';  // Importa o axios para fazer requisições ao backend
 
 export interface CupomData {
   nome: string;
@@ -12,12 +12,22 @@ export interface CupomData {
 function Home() {
   const [cupomData, setCupomData] = useState<CupomData[]>([]);
 
+  // Carrega os dados salvos no localStorage ao iniciar o componente
+  useEffect(() => {
+    const savedData = localStorage.getItem('cupomData');
+    if (savedData) {
+      setCupomData(JSON.parse(savedData));
+    }
+  }, []);
+
   const handleScanSuccess = async (qrData: string) => {
     try {
       // Chama o backend com os dados do QR code
       const backendURL = 'https://seu-backend-url.vercel.app';  // Substitua pela URL do backend no Vercel
 
-      const response = await axios.post(`${backendURL}/processar-dados`, { qrData });
+      const response = await axios.get(`${backendURL}/api/cupom/buscar-dados`, {
+        params: { url: qrData },
+      });
       console.log('Dados processados pelo backend:', response.data);
 
       const parsedData = response.data as CupomData;  // Recebe os dados no formato esperado
@@ -30,12 +40,11 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    const savedData = localStorage.getItem('cupomData');
-    if (savedData) {
-      setCupomData(JSON.parse(savedData));
-    }
-  }, []);
+  const handleClearList = () => {
+    // Limpa a lista e remove os dados do localStorage
+    setCupomData([]);
+    localStorage.removeItem('cupomData');
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-8">
@@ -44,36 +53,8 @@ function Home() {
       {/* Usa o componente QrScanner e passa a função de callback */}
       <QrScanner onScanSuccess={handleScanSuccess} />
 
-      <h2 className="text-2xl font-semibold mb-4">Dados de Cupons Fiscais</h2>
-      <div className="w-full max-w-4xl overflow-x-auto">
-        <table className="table-auto w-full bg-white shadow-md rounded-lg">
-          <thead className="bg-blue-500 text-white">
-            <tr>
-              <th className="px-4 py-2">Nome</th>
-              <th className="px-4 py-2">Valor</th>
-              <th className="px-4 py-2">Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cupomData.map((cupom, index) => (
-              <tr key={index} className="border-t">
-                <td className="px-4 py-2 text-center">{cupom.nome}</td>
-                <td className="px-4 py-2 text-center">{cupom.valor}</td>
-                <td className="px-4 py-2 text-center">{cupom.data}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {cupomData.length > 0 && (
-        <button
-          className="mt-6 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
-          onClick={() => exportToCSV(cupomData)}
-        >
-          Exportar CSV
-        </button>
-      )}
+      {/* Renderiza a lista de cupons lidos e o botão de exportação */}
+      <CupomList cupons={cupomData} onClear={handleClearList} />
     </div>
   );
 }

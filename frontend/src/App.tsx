@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import QrScannerModal from './components/QrScannerModal';
 import axios from 'axios';
+import { exportToCSV } from './utils/csvHelper';  // Importa a função de exportar CSV
 
 const App: React.FC = () => {
   const [cupomData, setCupomData] = useState<string | null>(null);
@@ -41,6 +42,12 @@ const App: React.FC = () => {
         setLoading(false);  // Para o carregamento
       }
     }
+  };
+
+  const handleExportAndClear = () => {
+    exportToCSV(history);  // Exporta a lista como CSV
+    setHistory([]);  // Limpa a lista no estado
+    localStorage.removeItem('cupons');  // Remove a lista do localStorage
   };
 
   return (
@@ -89,6 +96,14 @@ const App: React.FC = () => {
               ))}
             </tbody>
           </table>
+
+          {/* Botão para exportar a lista em CSV e limpar */}
+          <button
+            className="mt-6 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+            onClick={handleExportAndClear}
+          >
+            Exportar CSV e Limpar Lista
+          </button>
         </div>
       )}
     </div>
