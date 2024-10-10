@@ -1,5 +1,5 @@
 import React from 'react';
-import { exportToCSV } from '../utils/csvHelper';  // Função utilitária para exportar CSV
+import { exportToCSV } from '../utils/csvHelper';
 
 interface CupomData {
   nome: string;
@@ -9,13 +9,13 @@ interface CupomData {
 
 interface CupomListProps {
   cupons: CupomData[];
-  onClear: () => void;  // Função chamada após limpar a lista
+  onClear: () => void;
 }
 
 const CupomList: React.FC<CupomListProps> = ({ cupons, onClear }) => {
   const handleExportAndClear = () => {
-    exportToCSV(cupons);  // Exporta a lista como CSV
-    onClear();  // Limpa a lista após exportar
+    exportToCSV(cupons);
+    onClear();
   };
 
   return (
@@ -44,7 +44,7 @@ const CupomList: React.FC<CupomListProps> = ({ cupons, onClear }) => {
           className="mt-6 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
           onClick={handleExportAndClear}
         >
-          Exportar CSV e Limpar Lista
+          Exportar Tabela
         </button>
       )}
     </div>
