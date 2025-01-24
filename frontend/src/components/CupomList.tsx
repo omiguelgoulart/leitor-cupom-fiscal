@@ -5,6 +5,8 @@ interface CupomData {
   nome: string;
   valor: string;
   data: string;
+  number: string;
+  
 }
 
 interface CupomListProps {
@@ -25,6 +27,7 @@ const CupomList: React.FC<CupomListProps> = ({ cupons, onClear }) => {
         <thead className="bg-blue-500 text-white">
           <tr>
             <th className="px-4 py-2">Nome</th>
+            <th className="px-4 py-2">Nº/ Série</th>
             <th className="px-4 py-2">Valor</th>
             <th className="px-4 py-2">Data</th>
           </tr>
@@ -33,6 +36,7 @@ const CupomList: React.FC<CupomListProps> = ({ cupons, onClear }) => {
           {cupons.map((cupom, index) => (
             <tr key={index} className="border-t">
               <td className="px-4 py-2 text-center">{cupom.nome}</td>
+              <td className="px-4 py-2 text-center">{cupom.number}</td>
               <td className="px-4 py-2 text-center">{cupom.valor}</td>
               <td className="px-4 py-2 text-center">{cupom.data}</td>
             </tr>

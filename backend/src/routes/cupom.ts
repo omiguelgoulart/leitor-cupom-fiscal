@@ -31,11 +31,20 @@ router.get('/buscar-dados', async (req: Request, res: Response) => {
             .split('-')[0]
             .trim();
 
+        // Extrai o número e a série do cupom fiscal
+        const numeroSerieText = $('li:contains("Número:")').text();
+        const numero = numeroSerieText.match(/Número:\s(\d+)/)?.[1];
+        const serie = numeroSerieText.match(/Série:\s(\d+)/)?.[1];
+
+        // Concatena número e série no formato "numero/serie"
+        const numeroSerie = numero && serie ? `${numero}/${serie}` : null;
+
         // Retorna os dados extraídos em formato JSON
         res.json({
             nome: nomeEstabelecimento,
             valor: valorTotal,
             data: dataEmissao,
+            number: numeroSerie,
         });
     } catch (error) {
         console.error('Erro ao buscar os dados:', error);
